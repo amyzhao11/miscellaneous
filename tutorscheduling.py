@@ -3,7 +3,7 @@ from gurobipy import *
 #sets
 Tutes = range(13)
 name=['01','02','03','04','05','06','07','09','10','11','13','14','16']
-#names have be deanonymised
+#names have be anonymised
 Lname=['LeadTutor1','LeadTutor2','LeadTutor3','LeadTutor4', 'LeadTutor5']
 Tname=['Tutor1','Tutor2','Tutor3','Tutor4','Tutor5','Tutor6','Tutor7','Tutor8','Tutor9','Tutor10','Tutor11','Tutor12','Tutor13','Tutor14']
 L = range(5)
