@@ -15,3 +15,6 @@ Marking Criteria
 solves (5 Marks)
 2. description of usage and comments throughout scripts (3 Marks)
 3. proper formatting using GitHub markdown (2 Mark)
+
+## Dependencies
+python=3.7 scikit-learn jupyter notebook tensorflow-gpu matplotlib keras scikit-image
