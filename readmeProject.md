@@ -4,6 +4,23 @@ I have decided to implement a DCGAN on OASIS brain MRI images.
 ## Data:
 Data consists of all the non-segmented OASIS data (9664 training images, 544 test images, 1120 validation images). The size of these images are 256x256 and are greyscale.
 
+## Driver script
+### Loading the data
+
+### Preprocessing the data
+
+### Training the model
+
+### SSIM
+
+## Model script
+The model script contains 3 functions
+
+### Generator
+
+### Discriminator
+
+### GAN
 1. The read me file should contain a title, a description of the algorithm and the problem that it solves
 (approximately a paragraph), how it works in a paragraph and a figure/visualisation.
 2. It should also list any dependencies required
