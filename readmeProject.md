@@ -16,17 +16,27 @@ In particular, I have implemented a deep convolutional generative adversarial ne
 * scaling training images from [-1,1]
 * in LeakyReLU, the slope of the leak was set to 0.2
 * using an Adam optimiser with learning rate of 0.0002 (I used 0.0002 for the generator and 0.0001 for the discriminator)
+* no pooling layers
 
 I also did not follow several specifications as I found they either did not work or produced lower quality results:
 * They suggested the use of a ReLU activation function in the generator, however, I found LeakyReLU worked better as I used noise inputs generated with mean=0, sd=1. They also suggested the use of a Tanh activation function in the final layer of the generator, however, I found my model worked better without any activation functions in the generator and discriminator.
 * Instead of using a batch size of 128, I used a batch size of 10 (i.e. 10 real and 10 fake images in each batch). I found larger batch sizes would overload the GPU.
-
-
-
-
+* The paper suggested the use of beta_1=0.5 for the Adam optimiser, however I found that using the default beta_1=0.9 worked fine.
+* I decided to use a latent space of 256 instead of 100 for no real reason and this worked quite well
+* For the Conv2DTranspose layers, when using the depicted kernel size of (5,5) with stride (2,2) (Figure 1 in [1]) I got very aliased generator images with grid artifacts. This was remedied by using a kernel size of (4,4) with stride (2,2)
+* Also in reference to Figure 1 in [1], I tried using four fractionally-strided convolutions (Conv2DTranspose) layers with one convolutional layer after and ended up with mode collapse. My model was working and produced very high quality brain images (SSIM>0.6) however, my generator would only produce the same images regardless of the noise input. I later fixed this by using three Conv2DTranspose layers and two convolutional layers instead.
 
 ## Data:
 Data consists of all the non-segmented OASIS data (9664 training images, 544 test images, 1120 validation images). The size of these images are 256x256 and are greyscale.
+
+## Model script
+The model script contains 2 functions
+
+### Generator
+The generator generates 256 x 256 images and is designed to take an input noise vector with latent space of size 256. 
+
+### Discriminator
+The discriminator takes an input image size of 256 x 256 and returns one output value. Its main objective is to classify the input images as real or fake. 
 
 ## Driver script
 ### Dependencies
@@ -46,21 +56,22 @@ The OASIS dataset contains 6 folders, however, only 3 of those folders are relev
 ⋅⋅*/keras_png_slices_train
 ⋅⋅*/keras_png_slices_test
 ⋅⋅*/keras_png_slices_validate
+These images were loaded for each folder and then concatenated into a single variable containing all the images, there were a total of 11328 images.
 
 ### Preprocessing the data
+As per the paper [1], I scaled the image pixel values so that they were between -1 and 1. 
 
 ### Training the model
 
+
+#### Sample outputs
+
+
 ### SSIM
 
-## Model script
-The model script contains 3 functions
 
-### Generator
 
-### Discriminator
 
-### GAN
 1. The read me file should contain a title, a description of the algorithm and the problem that it solves
 (approximately a paragraph), how it works in a paragraph and a figure/visualisation.
 2. It should also list any dependencies required
