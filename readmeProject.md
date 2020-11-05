@@ -1,11 +1,28 @@
 # DCGAN on OASIS data
 I have decided to implement a DCGAN on OASIS brain MRI images.
+
 Amy Zhao
+
 43571806
 
+## Introduction:
 An important field within computer vision is medical imaging. However, it is often difficult to obtain a large sample of training images. Limitations to obtaining brain MRIs include: the low availability of participants, the time it takes to obtain and process high resolution MRI brain images, as well as the fact that participants have to stay still for long periods of time (whichkes it difficult to obtain a good image). Therefore it is useful to implement a generative adversarial network (GAN) that can be trained on existing brain MRIs and then if trained successfully, it can generate an infinite number of plausible brain MRIs. This would aid the training of computer vision techniques such as brain segmentation which would require much more expansive datasets that may otherwise not exist without many man-hours of medical imaging. 
 
-In particular, I used a DCGAN in accordance to [1] 
+In particular, I have implemented a deep convolutional generative adversarial network (DCGAN) with reference DCGAN specifications in the paper written by Radford, Metz and Chintala [1]. In the DCGAN, the use of convolutional layers allows higher quality feature mapping and recognition relative to the traditional GAN only connected by dense layers. In my GAN implementation, I followed specifications such as:
+* using LeakyReLU in the discriminator
+* using strided convolutions in the discriminator and fractional-strided convolutions in the generator
+* using batchnorm in both the generator and discriminator
+* remove fully connected hidden layers
+* scaling training images from [-1,1]
+* in LeakyReLU, the slope of the leak was set to 0.2
+* using an Adam optimiser with learning rate of 0.0002 (I used 0.0002 for the generator and 0.0001 for the discriminator)
+
+I also did not follow several specifications as I found they either did not work or produced lower quality results:
+* They suggested the use of a ReLU activation function in the generator, however, I found LeakyReLU worked better as I used noise inputs generated with mean=0, sd=1. They also suggested the use of a Tanh activation function in the final layer of the generator, however, I found my model worked better without any activation functions in the generator and discriminator.
+* Instead of using a batch size of 128, I used a batch size of 10 (i.e. 10 real and 10 fake images in each batch). I found larger batch sizes would overload the GPU.
+
+
+
 
 
 ## Data:
