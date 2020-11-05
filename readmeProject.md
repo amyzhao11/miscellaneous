@@ -25,6 +25,7 @@ I also did not follow several specifications as I found they either did not work
 * I decided to use a latent space of 256 instead of 100 for no real reason and this worked quite well
 * For the Conv2DTranspose layers, when using the depicted kernel size of (5,5) with stride (2,2) (Figure 1 in [1]) I got very aliased generator images with grid artifacts. This was remedied by using a kernel size of (4,4) with stride (2,2)
 * Also in reference to Figure 1 in [1], I tried using four fractionally-strided convolutions (Conv2DTranspose) layers with one convolutional layer after and ended up with mode collapse. My model was working and produced very high quality brain images (SSIM>0.6) however, my generator would only produce the same images regardless of the noise input. I later fixed this by using three Conv2DTranspose layers and two convolutional layers instead.
+* I used dropout layers in my discriminator to make my discriminator learn more slowly. I did not try running the GAN without dropout layers so I'm not sure if this had any real effect, but the current model is quite effective.
 
 ## Data:
 Data consists of all the non-segmented OASIS data (9664 training images, 544 test images, 1120 validation images). The size of these images are 256x256 and are greyscale.
@@ -33,10 +34,10 @@ Data consists of all the non-segmented OASIS data (9664 training images, 544 tes
 The model script contains 2 functions
 
 ### Generator
-The generator generates 256 x 256 images and is designed to take an input noise vector with latent space of size 256. Its main aim is to get the discriminator to classify the generator's images as real by learning how to produce "real" looking images.
+The generator generates 256 x 256 images and is designed to take an input noise vector with latent space of size 256. Batchnorm is used after every convolutional layer except the last one.
 
 ### Discriminator
-The discriminator takes an input image size of 256 x 256 and returns one output value. Its main objective is to classify the input images as real or fake by trying to minimise its loss. 
+The discriminator takes an input image size of 256 x 256 and returns one output value. Its main objective is to classify the input images as real or fake by trying to minimise its loss. Batchnorm is used after every convolutional layer except the last one. I also used dropout layers with a dropout of 0.4.
 
 ## Driver script
 ### Dependencies
@@ -76,11 +77,11 @@ I defined a training loop which feeds an image batch to the training function an
 
 #### Sample outputs
 
-
+******insert images
 ### SSIM
 After generating images from the trained generator, you can choose an image to calculate the SSIM for. This calculation involves iterating over the entire training set and calculating and storing the SSIM value. The maximum SSIM is then displayed along with the corresponding training image which is closest in structural similarity to the generated image. With 200 epochs, the SSIM should be above 0.64 with some images reaching 0.68.
 
-
+******insert images
 
 ## Note
 I have been committing for the past 2 weeks, however, on 05/11 I changed the title of my folder from "Project" to "GAN Project" since I thought it was too vague. I did not realise at the time that having a space in the name of my folder would make me unable to access the folder through the terminal, so I changed it back to "Project". Upon doing so, I have found that I am unable to see any commits I have made prior to this day but you can check with Wei that I have been committing during the in-person pracs. In addition to this, I tried pushing my folder to my repo but I kept getting errors saying that one of my files was too big. I deleted that file but I have continued to get that error since it is still saved in my commit history. 
