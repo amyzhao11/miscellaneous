@@ -13,9 +13,9 @@ In particular, I have implemented a deep convolutional generative adversarial ne
 * using strided convolutions in the discriminator and fractional-strided convolutions in the generator
 * using batchnorm in both the generator and discriminator
 * remove fully connected hidden layers
-* scaling training images from [-1,1]
+* scaling training image pixel values from -1 to 1
 * in LeakyReLU, the slope of the leak was set to 0.2
-* using an Adam optimiser with learning rate of 0.0002 (I used 0.0002 for the generator and 0.0001 for the discriminator)
+* using an Adam optimiser with learning rate of 0.0002 for both generator and discriminator (I used 0.0002 for the generator and 0.0001 for the discriminator)
 * no pooling layers
 
 I also did not follow several specifications as I found they either did not work or produced lower quality results:
@@ -33,10 +33,10 @@ Data consists of all the non-segmented OASIS data (9664 training images, 544 tes
 The model script contains 2 functions
 
 ### Generator
-The generator generates 256 x 256 images and is designed to take an input noise vector with latent space of size 256. 
+The generator generates 256 x 256 images and is designed to take an input noise vector with latent space of size 256. Its main aim is to get the discriminator to classify the generator's images as real by learning how to produce "real" looking images.
 
 ### Discriminator
-The discriminator takes an input image size of 256 x 256 and returns one output value. Its main objective is to classify the input images as real or fake. 
+The discriminator takes an input image size of 256 x 256 and returns one output value. Its main objective is to classify the input images as real or fake by trying to minimise its loss. 
 
 ## Driver script
 ### Dependencies
@@ -49,7 +49,7 @@ My driver script requires the following packages to be installed in the environm
 * matplotlib
 
 ### Package installation
-Here, I install all the relevant packages which include tensorflow and keras which are involved in the creation of the GAN model. I also installed numpy, PIL, glob and os to help with loading the training images from a specific directory. Matplotlib was used for image visualisation and sys was used to check whether a GPU was available as GAN training requires a lot of computational power and I would have trouble with GPU availability on the lab computers. I also call my generator and discriminator functions form modelscript.py.
+Here, I install all the relevant packages which include tensorflow and keras which are involved in the creation of the GAN model. I also installed numpy, PIL, glob and os to help with loading the training images into an array from a specific directory. Matplotlib was used for image visualisation and sys was used to check whether a GPU was available as GAN training requires a lot of computational power and I had a lot of trouble with GPU availability on the lab computers. I also call my generator and discriminator functions from modelscript.py.
 
 ### Loading the data
 The OASIS dataset contains 6 folders, however, only 3 of those folders are relevant to this project as they contain non-segmented brain MRI images. These are:
@@ -61,28 +61,24 @@ These images were loaded for each folder and then concatenated into a single var
 ### Preprocessing the data
 As per the paper [1], I scaled the image pixel values so that they were between -1 and 1. 
 
-### Training the model
+### Loss functions and optimisers
+The loss for the discriminator was defined as the sum of the binary crossentropy of classifying the real images and the binary crossentropy of classifying the fake images. The loss for the generator was defined as the binary crossentropy of fake images with real image labels. This means the loss for the generator is minimised if its generated images are classified as real.
 
+I used the Adam optimiser with learning rate 0.0002 for the generator and a learning rate of 0.0001 for the discriminator as I found the generator loss was not growing as quickly as I would have liked when the discriminator learning rate was 0.0002.
+
+### Training function
+I defined a training function with gradient tape with help from the tensorflow website [2].
+
+### Training the model
+I used a batch size of 10 and ran my model for 200 epochs, this took about 6 hours. However, it would be sufficient to get decent images by running it for 20 or more epochs. The training data was shuffled and partitioned into 1133 batches (total number of images divided by batch size) using tf.data.Dataset.from_tensor_slices. 
+
+I defined a training loop which feeds an image batch to the training function and also print the discriminator and generator loss at certain iterations as well as sample images from the generator so that the user can track its progress. 
 
 #### Sample outputs
 
 
 ### SSIM
-
-
-
-
-1. The read me file should contain a title, a description of the algorithm and the problem that it solves
-(approximately a paragraph), how it works in a paragraph and a figure/visualisation.
-2. It should also list any dependencies required
-3. provide example outputs and plots of your algorithm code
-4. The read me file should be properly formatted using GitHub markdown
-5. describe and justify your training, validation and testing split of the data.
-Marking Criteria
-1. description and explanation of the working principles of the algorithm implemented and the problem it
-solves (5 Marks)
-2. description of usage and comments throughout scripts (3 Marks)
-3. proper formatting using GitHub markdown (2 Mark)
+After generating images from the trained generator, you can choose an image to calculate the SSIM for. This calculation involves iterating over the entire training set and calculating and storing the SSIM value. The maximum SSIM is then displayed along with the corresponding training image which is closest in structural similarity to the generated image. With 200 epochs, the SSIM should be above 0.64 with some images reaching 0.68.
 
 
 
@@ -92,3 +88,5 @@ I have been committing for the past 2 weeks, however, on 05/11 I changed the tit
 [1] A. Radford, L. Metz, and S. Chintala, “Unsupervised Representation Learning with Deep Convolutional
 Generative Adversarial Networks,” arXiv:1511.06434 [cs], Jan. 2016, arXiv: 1511.06434. [Online]. Available:
 http://arxiv.org/abs/1511.06434
+
+[2] TensorFlow, "Deep Convolutional Generative Adversarial Network", [Online]. Available: https://www.tensorflow.org/tutorials/generative/dcgan
