@@ -1,5 +1,5 @@
 # DCGAN on OASIS data
-I have decided to implement a DCGAN on OASIS brain MRI images.
+I have implemented a DCGAN on OASIS brain MRI images.
 
 Amy Zhao
 
@@ -76,6 +76,20 @@ I used a batch size of 10 and ran my model for 200 epochs, this took about 6 hou
 I defined a training loop which feeds an image batch to the training function and also print the discriminator and generator loss at certain iterations as well as sample images from the generator so that the user can track its progress. 
 
 #### Sample outputs
+4th epoch:
+![4th Epoch](https://github.com/amyzhao11/miscellaneous/blob/master/0411%20Epoch4%20batch0%20less%20g%20layers.png)
+
+10th epoch:
+![10th Epoch](https://github.com/amyzhao11/miscellaneous/blob/master/0411%20Epoch10%20batch0%20less%20g%20layers.png)
+
+20th epoch:
+![20th Epoch](https://github.com/amyzhao11/miscellaneous/blob/master/0411%20Epoch20%20batch0%20less%20g%20layers.png)
+
+50th epoch:
+![50th Epoch](https://github.com/amyzhao11/miscellaneous/blob/master/0411%20Epoch50%20batch0%20less%20g%20layers.png)
+
+199th epoch:
+![199th Epoch](https://github.com/amyzhao11/miscellaneous/blob/master/0411%20Epoch199%20batch700%20less%20g%20layers.png)
 
 ******insert images
 ### SSIM
